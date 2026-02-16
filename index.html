@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TopKnocker — Prospecting Intelligence for Estate Agents</title>
+<meta name="description" content="Know who's about to sell before they list. Ownership intelligence, on-market signals, and automated letters — built for UK estate agents.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after { margin:0;padding:0;box-sizing:border-box; }
+:root {
+  --bg: #0A0A0B;
+  --bg-elevated: #111113;
+  --bg-card: #161618;
+  --border: #2A2A2E;
+  --text: #F4F4F5;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
+  --accent: #3B82F6;
+  --accent-glow: rgba(59,130,246,0.15);
+  --hot: #EF4444;
+  --warm: #10B981;
+  --amber: #F59E0B;
+  --purple: #8B5CF6;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'Outfit', -apple-system, sans-serif;
+  --radius: 12px;
+  --max-w: 1100px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); text-decoration: none; }
+
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,10,11,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 2rem; }
+.nav-inner { max-width: var(--max-w); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 64px; }
+.nav-logo { font-family: var(--font-display); font-size: 1.4rem; color: var(--text); letter-spacing: -0.5px; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a { color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.5rem; border-radius: 8px; font-family: var(--font-body); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.25s; border: none; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #2563EB; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(59,130,246,0.25); }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-large { padding: 0.85rem 2rem; font-size: 0.95rem; }
+
+/* HERO */
+.hero { padding: 10rem 2rem 6rem; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.08) 0%, transparent 60%); pointer-events: none; }
+.hero-inner { max-width: var(--max-w); margin: 0 auto; position: relative; }
+.hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem; background: var(--accent-glow); border: 1px solid rgba(59,130,246,0.2); border-radius: 999px; font-size: 0.8rem; font-weight: 500; color: var(--accent); margin-bottom: 1.5rem; animation: fadeInUp 0.6s ease both; }
+.hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.hero h1 { font-family: var(--font-display); font-size: clamp(2.8rem, 6vw, 4.2rem); line-height: 1.12; letter-spacing: -1.5px; max-width: 750px; animation: fadeInUp 0.6s 0.1s ease both; }
+.hero h1 em { font-style: normal; background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-sub { font-size: 1.15rem; color: var(--text-secondary); max-width: 580px; margin-top: 1.5rem; font-weight: 300; line-height: 1.7; animation: fadeInUp 0.6s 0.2s ease both; }
+.hero-ctas { margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeInUp 0.6s 0.3s ease both; }
+.hero-channels { margin-top: 3rem; display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeInUp 0.6s 0.4s ease both; }
+.channel-pill { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 999px; font-size: 0.8rem; color: var(--text-secondary); }
+@keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+/* SECTIONS */
+section { padding: 5rem 2rem; }
+section + section { border-top: 1px solid var(--border); }
+.section-inner { max-width: var(--max-w); margin: 0 auto; }
+.section-tag { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 0.8rem; }
+.section-title { font-family: var(--font-display); font-size: 2.1rem; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 0.8rem; }
+.section-sub { color: var(--text-secondary); font-size: 1rem; max-width: 600px; margin-bottom: 3rem; line-height: 1.7; }
+
+/* STORY SECTION */
+.story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.story-text p { color: var(--text-secondary); font-size: 1rem; line-height: 1.8; margin-bottom: 1rem; }
+.approach-cards { display: flex; flex-direction: column; gap: 0.8rem; }
+.approach-card { padding: 1.2rem 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); display: flex; gap: 1rem; align-items: flex-start; transition: border-color 0.2s; }
+.approach-card:hover { border-color: rgba(59,130,246,0.3); }
+.approach-card .icon { font-size: 1.2rem; width: 2.5rem; height: 2.5rem; min-width: 2.5rem; display: flex; align-items: center; justify-content: center; background: var(--accent-glow); border-radius: 8px; }
+.approach-card .text strong { display: block; font-size: 0.9rem; margin-bottom: 0.15rem; }
+.approach-card .text span { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+
+/* SIGNAL GRID */
+.signal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.signal-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; position: relative; overflow: hidden; transition: all 0.3s; }
+.signal-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.signal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--card-accent, var(--accent)); }
+.signal-card .signal-icon { font-size: 2rem; margin-bottom: 1rem; }
+.signal-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.signal-card p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+.signal-card .signal-tag { margin-top: 1rem; display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* SCORE SECTION */
+.score-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; margin-top: 2rem; }
+.score-visual { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; }
+.score-ring-demo { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; margin: 0 auto 1rem; position: relative; }
+.score-ring-demo::after { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: var(--bg-card); }
+.score-ring-demo span { position: relative; z-index: 1; }
+.score-bars { margin-top: 1.5rem; }
+.score-bar { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; }
+.score-bar-label { font-size: 0.8rem; width: 140px; color: var(--text-secondary); }
+.score-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+
+/* COMPARISON */
+.comparison-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 2rem; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+.comparison-table th, .comparison-table td { padding: 0.9rem 1.2rem; text-align: left; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+.comparison-table thead th { background: var(--bg-card); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+.comparison-table thead th:last-child { background: rgba(59,130,246,0.08); color: var(--accent); }
+.comparison-table tbody td { background: var(--bg-elevated); }
+.comparison-table tbody td:last-child { background: rgba(59,130,246,0.04); font-weight: 600; }
+.comparison-table tbody tr:last-child td { border-bottom: none; }
+.check { color: var(--warm); font-weight: 700; }
+.cross { color: var(--text-muted); }
+
+/* HOW IT WORKS */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: 3rem; }
+.step { position: relative; }
+.step::after { content: '→'; position: absolute; right: -1.3rem; top: 2rem; font-size: 1.2rem; color: var(--text-muted); }
+.step:last-child::after { display: none; }
+.step-num { width: 3rem; height: 3rem; background: var(--accent-glow); border: 1px solid rgba(59,130,246,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: var(--accent); margin-bottom: 1rem; }
+.step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.step p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* PRICING */
+.pricing-grid { display: flex; justify-content: center; margin-top: 3rem; text-align: left; }
+.pricing-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem 2rem; position: relative; transition: all 0.3s; max-width: 520px; width: 100%; }
+.pricing-card:hover { transform: translateY(-3px); }
+.pricing-card.featured { border-color: var(--accent); box-shadow: 0 0 60px rgba(59,130,246,0.1); }
+.pricing-card .popular-tag { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--hot); color: #fff; padding: 0.3rem 1rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+.pricing-card .plan-name { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 0.5rem; }
+.pricing-card .plan-price { font-family: var(--font-display); font-size: 3.5rem; letter-spacing: -1px; margin-bottom: 0.1rem; }
+.pricing-card .plan-price span { font-size: 1rem; color: var(--text-muted); font-family: var(--font-body); font-weight: 400; }
+.pricing-card .plan-was { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem; }
+.pricing-card .plan-was s { color: var(--text-muted); opacity: 0.7; }
+.pricing-card .plan-was .save-tag { display: inline-block; background: rgba(16,185,129,0.12); color: var(--warm); font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 4px; margin-left: 0.4rem; }
+.pricing-card .plan-trial { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); color: var(--accent); font-size: 0.8rem; font-weight: 600; padding: 0.4rem 0.9rem; border-radius: 999px; margin-bottom: 1.2rem; }
+.pricing-card .plan-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+.pricing-card .plan-features { list-style: none; padding: 0; margin-bottom: 2rem; }
+.pricing-card .plan-features li { font-size: 0.85rem; color: var(--text-secondary); padding: 0.4rem 0; display: flex; align-items: center; gap: 0.6rem; }
+.pricing-card .plan-features li::before { content: '✓'; color: var(--warm); font-weight: 700; font-size: 0.9rem; }
+.pricing-card .btn { width: 100%; justify-content: center; }
+.pricing-card .plan-urgency { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; }
+.pricing-card .plan-urgency strong { color: var(--amber); }
+.pricing-guarantee { text-align: center; margin-top: 2rem; font-size: 0.85rem; color: var(--text-muted); }
+.pricing-guarantee strong { color: var(--text-secondary); }
+
+/* TESTIMONIAL */
+.testimonial-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+.testimonial blockquote { font-family: var(--font-display); font-size: 1.7rem; line-height: 1.4; letter-spacing: -0.3px; margin-bottom: 2rem; position: relative; }
+.testimonial blockquote::before { content: '"'; font-size: 6rem; color: var(--accent); opacity: 0.3; position: absolute; top: -2rem; left: -1rem; line-height: 1; }
+.testimonial cite { font-style: normal; font-size: 0.9rem; color: var(--text-muted); }
+.testimonial cite strong { color: var(--text-secondary); }
+
+/* CTA */
+.cta-section { padding: 5rem 2rem; background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.06)); }
+.cta-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+.cta-inner h2 { font-family: var(--font-display); font-size: 2.3rem; letter-spacing: -0.5px; margin-bottom: 1rem; }
+.cta-inner p { color: var(--text-secondary); font-size: 1rem; margin-bottom: 2rem; }
+.demo-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 500px; margin: 0 auto; }
+.demo-form input { padding: 0.75rem 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font-body); font-size: 0.85rem; outline: none; transition: border-color 0.2s; }
+.demo-form input:focus { border-color: var(--accent); }
+.demo-form input.full { grid-column: 1 / -1; }
+.demo-form .btn { grid-column: 1 / -1; justify-content: center; }
+
+/* FAQ */
+.faq-item { border-bottom: 1px solid var(--border); padding: 1.5rem 0; }
+.faq-q { font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.faq-q::after { content: '+'; font-size: 1.3rem; color: var(--text-muted); transition: transform 0.2s; }
+.faq-item.open .faq-q::after { transform: rotate(45deg); color: var(--accent); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+.faq-item.open .faq-a { max-height: 300px; padding-top: 1rem; }
+
+footer { padding: 3rem 2rem; border-top: 1px solid var(--border); text-align: center; }
+footer p { font-size: 0.8rem; color: var(--text-muted); }
+footer a { color: var(--text-secondary); }
+
+@media (max-width: 900px) {
+  .signal-grid { grid-template-columns: 1fr; }
+  .pricing-card { max-width: 100%; }
+  .story-grid, .score-demo { grid-template-columns: 1fr; gap: 2rem; }
+  .steps { grid-template-columns: 1fr 1fr; }
+  .step::after { display: none; }
+  .nav-links a:not(.btn) { display: none; }
+}
+@media (max-width: 600px) {
+  .hero h1 { font-size: 2.2rem; }
+  .steps { grid-template-columns: 1fr; }
+  .demo-form { grid-template-columns: 1fr; }
+  .hero-ctas { flex-direction: column; }
+  .hero-ctas .btn { width: 100%; justify-content: center; }
+}
+
+/* --- Mobile improvements (added) --- */
+.table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius); }
+.table-scroll .comparison-table { min-width: 760px; }
+@media (max-width: 600px) {
+  nav { padding: 0 1rem; }
+  .nav-inner { height: 56px; }
+  .nav-logo { font-size: 1.2rem; }
+  .hero { padding: 7.5rem 1rem 4rem; }
+  section { padding: 3.5rem 1rem; }
+  .comparison-table th, .comparison-table td { padding: 0.75rem 0.9rem; font-size: 0.8rem; }
+  .channel-pill { font-size: 0.75rem; padding: 0.45rem 0.85rem; }
+}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">Top<span>Knocker</span></div>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#signals">Signals</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="#demo" class="btn btn-primary">Start free trial</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Free 7-day trial — no card required</div>
+    <h1>Know who's about to sell — <em>before they list.</em></h1>
+    <p class="hero-sub">TopKnocker scores every property in your patch using ownership data, market signals, and planning intelligence — then scans your territory every week for new listings, price reductions, and fallen-through sales. You arrive first, with context.</p>
+    <div class="hero-ctas">
+      <a href="#demo" class="btn btn-primary btn-large">Start free trial →</a>
+      <a href="#pricing" class="btn btn-outline btn-large">See pricing</a>
+    </div>
+    <div class="hero-channels">
+      <div class="channel-pill">✉️ Targeted letters</div>
+      <div class="channel-pill">🚪 Informed visits</div>
+      <div class="channel-pill">📞 Warm calls</div>
+      <div class="channel-pill">📧 Mailshots</div>
+      <div class="channel-pill">📋 Live market changes</div>
+    </div>
+  </div>
+</section>
+
+<!-- THE APPROACH -->
+<section>
+  <div class="section-inner">
+    <div class="story-grid">
+      <div class="story-text">
+        <div class="section-tag">The approach</div>
+        <h2 class="section-title">It's not about knocking every door. It's about knowing the right ones.</h2>
+        <p>Most prospecting is a numbers game — blast enough letters, knock enough doors, and eventually something sticks. It's exhausting, inefficient, and honestly, most agents hate doing it.</p>
+        <p>TopKnocker flips it around. We give you a scored target list ranked by how likely someone is to sell. Then <strong>you choose</strong> the approach that suits you — a thoughtful, personalised letter is often more effective than turning up unannounced. And when you do knock, you arrive with context that makes the conversation completely different.</p>
+        <p style="color:var(--text);font-weight:500;">The intelligence is the product. How you use it is up to you.</p>
+      </div>
+      <div class="approach-cards">
+        <div class="approach-card">
+          <div class="icon">✉️</div>
+          <div class="text"><strong>Personalised letters</strong><span>AI-generated letters tailored to each property's signals — comparable sales, area data, the right tone for their situation. Not a generic mail merge.</span></div>
+        </div>
+        <div class="approach-card">
+          <div class="icon">🚪</div>
+          <div class="text"><strong>Informed visits</strong><span>When you do knock, you know why this property scored high, what nearby has sold, and what to talk about. It's a conversation, not a cold call.</span></div>
+        </div>
+        <div class="approach-card">
+          <div class="icon">📞</div>
+          <div class="text"><strong>Phone outreach</strong><span>Use the intelligence to prioritise call lists. Focus your time on the owners who are most likely to be receptive right now.</span></div>
+        </div>
+        <div class="approach-card">
+          <div class="icon">📧</div>
+          <div class="text"><strong>Batch mailshots</strong><span>Build a mailshot basket, generate letters for the batch, print and send. Systematic outreach to warm postcodes every month.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOTIVATION SCORE -->
+<section>
+  <div class="section-inner">
+    <div class="section-tag">Motivation Score</div>
+    <h2 class="section-title">Every property gets a score out of 100.</h2>
+    <p class="section-sub">We weigh six data signals to tell you: how likely is this owner to sell? You focus on the 70s, 80s, and 90s — and ignore the rest.</p>
+    <div class="score-demo">
+      <div class="score-visual">
+        <div class="score-ring-demo" style="background: conic-gradient(#EF4444 calc(82 * 3.6deg), rgba(255,255,255,0.06) 0); color: #EF4444;"><span>82</span></div>
+        <div style="text-align:center;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#EF4444;margin-bottom:1.5rem;">Hot Lead</div>
+        <div style="font-size:0.85rem;color:var(--text-secondary);text-align:center;margin-bottom:1.5rem;">14 Maple Close, CV5 · Detached · Held 18 years</div>
+        <div class="score-bars">
+          <div class="score-bar"><span class="score-bar-label">Ownership (18 yrs)</span><div class="score-bar-track"><div class="score-bar-fill" style="width:90%;background:#EF4444;"></div></div><span style="font-size:0.75rem;font-weight:700;color:#EF4444;">27</span></div>
+          <div class="score-bar"><span class="score-bar-label">EPC, no sale</span><div class="score-bar-track"><div class="score-bar-fill" style="width:80%;background:#F59E0B;"></div></div><span style="font-size:0.75rem;font-weight:700;color:#F59E0B;">20</span></div>
+          <div class="score-bar"><span class="score-bar-label">Not listed</span><div class="score-bar-track"><div class="score-bar-fill" style="width:20%;background:#3B82F6;"></div></div><span style="font-size:0.75rem;font-weight:700;color:#3B82F6;">5</span></div>
+          <div class="score-bar"><span class="score-bar-label">Planning app</span><div class="score-bar-track"><div class="score-bar-fill" style="width:48%;background:#8B5CF6;"></div></div><span style="font-size:0.75rem;font-weight:700;color:#8B5CF6;">12</span></div>
+          <div class="score-bar"><span class="score-bar-label">Multi-signal bonus</span><div class="score-bar-track"><div class="score-bar-fill" style="width:60%;background:#10B981;"></div></div><span style="font-size:0.75rem;font-weight:700;color:#10B981;">8</span></div>
+        </div>
+        <div style="text-align:center;margin-top:1.5rem;">
+          <button style="padding:0.7rem 1.5rem;background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font-body);">✉️ Send Letter — Hot Lead!</button>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:1.1rem;margin-bottom:1rem;">What feeds the score:</h3>
+        <div style="display:flex;flex-direction:column;gap:0.8rem;">
+          <div style="display:flex;gap:0.8rem;align-items:flex-start;"><span style="font-size:1.2rem;">🔥</span><div><strong style="font-size:0.9rem;">Ownership tenure</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">Land Registry data — 10+ year owners have maximum equity and are statistically most likely to move</span></div></div>
+          <div style="display:flex;gap:0.8rem;align-items:flex-start;"><span style="font-size:1.2rem;">⚡</span><div><strong style="font-size:0.9rem;">EPC without sale</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">Got an EPC (legally needed to sell) but never listed — they were thinking about it</span></div></div>
+          <div style="display:flex;gap:0.8rem;align-items:flex-start;"><span style="font-size:1.2rem;">💔</span><div><strong style="font-size:0.9rem;">Fallen-through sales</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">SSTC that collapsed — frustrated, motivated seller with no agent</span></div></div>
+          <div style="display:flex;gap:0.8rem;align-items:flex-start;"><span style="font-size:1.2rem;">📉</span><div><strong style="font-size:0.9rem;">Price reductions</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">Detected weekly — their agent isn't delivering</span></div></div>
+          <div style="display:flex;gap:0.8rem;align-items:flex-start;"><span style="font-size:1.2rem;">🏗</span><div><strong style="font-size:0.9rem;">Planning applications</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">Council data — extensions and changes signal life moves</span></div></div>
+          <div style="display:flex;gap:0.8rem;align-items:flex-start;"><span style="font-size:1.2rem;">📢</span><div><strong style="font-size:0.9rem;">On-market tracking</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">Weekly Rightmove scans across your territory</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LETTERS -->
+<section>
+  <div class="section-inner">
+    <div class="section-tag">Smart letters</div>
+    <h2 class="section-title">One click to a personalised letter. Not a mail merge.</h2>
+    <p class="section-sub">TopKnocker auto-picks the right tone and template based on why the property scored high. Every letter includes real comparable sales data from their area.</p>
+    <div class="signal-grid" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="signal-card" style="--card-accent: var(--amber);">
+        <h3>📉 Price reduced?</h3>
+        <p>The letter doesn't mention the reduction — it offers a "second opinion" and positions you as a fresh perspective. Empathetic, not predatory.</p>
+      </div>
+      <div class="signal-card" style="--card-accent: var(--hot);">
+        <h3>💔 Sale fell through?</h3>
+        <p>Acknowledges that selling can be frustrating, offers a different approach. References comparable sales to rebuild their confidence in what's achievable.</p>
+      </div>
+      <div class="signal-card" style="--card-accent: var(--warm);">
+        <h3>⚡ Got an EPC, didn't sell?</h3>
+        <p>Doesn't mention the EPC — talks about "activity in the area" and gently opens the door. If they were thinking about it, this is the nudge.</p>
+      </div>
+      <div class="signal-card" style="--card-accent: var(--purple);">
+        <h3>🏡 Long-term owner?</h3>
+        <p>The gentlest letter. Creates curiosity about their home's value without pressuring. "Whether you're thinking about a change or just curious…"</p>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:0.85rem;color:var(--text-muted);margin-top:1.5rem;">Every letter is 180 words max. Written as flowing prose — no bullet points, no jargon, no hard sell. Designed to feel like a human wrote it at their kitchen table.</p>
+  </div>
+</section>
+
+<!-- MARKET SCANNER -->
+<section id="signals">
+  <div class="section-inner">
+    <div class="section-tag">Automated Market Scanner</div>
+    <h2 class="section-title">Your market, scanned automatically every Monday.</h2>
+    <p class="section-sub">TopKnocker scans every listing across your territory weekly — so you see exactly what's changed before your first coffee.</p>
+    <div class="signal-grid">
+      <div class="signal-card" style="--card-accent: var(--accent);">
+        <div class="signal-icon">🆕</div>
+        <h3>New listings detected</h3>
+        <p>See every property that came on market this week, which agent listed it, and at what price. Know what your competitors are winning — as it happens.</p>
+      </div>
+      <div class="signal-card" style="--card-accent: var(--amber);">
+        <div class="signal-icon">📉</div>
+        <h3>Price reductions tracked</h3>
+        <p>When a listed property drops its price, TopKnocker catches it automatically. Their agent isn't delivering — that's your opening.</p>
+      </div>
+      <div class="signal-card" style="--card-accent: var(--hot);">
+        <div class="signal-icon">💔</div>
+        <h3>Sold STC &amp; fallen-throughs</h3>
+        <p>Listings that went under offer and then collapsed are your hottest leads. The scanner checks Rightmove status for every disappeared listing to find them.</p>
+      </div>
+      <div class="signal-card" style="--card-accent: var(--purple);">
+        <div class="signal-icon">🚫</div>
+        <h3>Withdrawals spotted</h3>
+        <p>Properties pulled from the market entirely. Frustrated seller, no agent — and you arrive with the intelligence to have a real conversation.</p>
+      </div>
+      <div class="signal-card" style="--card-accent: var(--warm);">
+        <div class="signal-icon">📋</div>
+        <h3>Market changes dashboard</h3>
+        <p>Every change is logged to a live dashboard your team can view — filterable by type, searchable by street or postcode, grouped by scan date.</p>
+      </div>
+      <div class="signal-card" style="--card-accent: #3B82F6;">
+        <div class="signal-icon">🏢</div>
+        <h3>Competitive intelligence</h3>
+        <p>See which agents are listing, losing, and reducing across your patch. Track market share trends and spot agencies that are struggling.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section id="comparison">
+  <div class="section-inner">
+    <div class="section-tag">Why TopKnocker</div>
+    <h2 class="section-title">The only prospecting tool built for UK agents.</h2>
+    <p class="section-sub">Every door-knocking app on the market is American — built for MLS and Zillow. None of them work here.</p>
+    <div class="table-scroll">
+      <table class="comparison-table">
+            <thead>
+              <tr><th>Capability</th><th>US apps (KnockWise, etc.)</th><th>Generic CRM</th><th>TopKnocker</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>HM Land Registry ownership data</td><td class="cross">✗ US only</td><td class="cross">✗</td><td class="check">✓</td></tr>
+              <tr><td>Motivation scoring (0–100)</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓</td></tr>
+              <tr><td>Live Rightmove monitoring</td><td class="cross">✗ MLS only</td><td class="cross">✗</td><td class="check">✓ Weekly</td></tr>
+              <tr><td>EPC signal detection</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓</td></tr>
+              <tr><td>UK planning application data</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓</td></tr>
+              <tr><td>AI personalised letters</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓ Per-property</td></tr>
+              <tr><td>Price reduction alerts</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓ Auto-detected</td></tr>
+              <tr><td>Market changes dashboard</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓ Live feed</td></tr>
+              <tr><td>Withdrawn &amp; fallen-through detection</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓ Automatic</td></tr>
+              <tr><td>Competitor tracking (agent intel)</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓ Per listing</td></tr>
+              <tr><td>Multi-agent teams + leaderboard</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+              <tr><td>UK pricing (GBP)</td><td class="cross">✗ USD</td><td class="check">✓</td><td class="check">✓ From £119</td></tr>
+            </tbody>
+          </table>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-inner">
+    <div class="section-tag">How it works</div>
+    <h2 class="section-title">Live in days. Generating leads in weeks.</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h3>We build your territory</h3><p>Tell us your patch — postcodes, towns, areas. We build a scored property database from Land Registry, EPC, and planning data.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>Weekly scanner runs</h3><p>Every Monday at 7am, your territory is automatically scanned for new listings, price reductions, withdrawals, and fallen-through sales.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>Review market changes</h3><p>Open your dashboard to see exactly what changed — new listings, price drops, who sold STC, who withdrew. Filter, search, and prioritise.</p></div>
+      <div class="step"><div class="step-num">4</div><h3>Send personalised letters</h3><p>One click generates a tailored letter using real comparable sales. Or use the intelligence for calls and visits. Track outcomes and convert.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="testimonial-inner">
+    <blockquote>Monday morning, the scanner tells us who withdrew, who reduced, and who just listed. We send 50 letters a month to the hottest properties. Our valuation rate is five times what generic mailshots ever got us.</blockquote>
+    <cite>— <strong>Branch manager</strong>, independent agency, Warwickshire</cite>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-inner" style="text-align:center;">
+    <div class="section-tag">Pricing</div>
+    <h2 class="section-title">One plan. Everything included. Per office.</h2>
+    <p class="section-sub" style="max-width:600px;margin:0 auto 3rem;">Free for 7 days. No card required. Cancel anytime.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card featured">
+        <div class="popular-tag">🔥 Launch price — limited time</div>
+        <div class="plan-name">Per Office</div>
+        <div class="plan-price">£79 <span>/mo</span></div>
+        <div class="plan-was"><s>£119/mo</s> <span class="save-tag">Save £40/mo</span></div>
+        <div class="plan-trial">✦ Free 7-day trial — no card needed</div>
+        <p class="plan-desc">Everything your office needs to prospect smarter. Lock in the launch rate before it goes up.</p>
+        <ul class="plan-features">
+          <li>Tailored territory pack for your patch</li>
+          <li>Unlimited agent accounts per office</li>
+          <li>Motivation scoring (0–100) on every property</li>
+          <li>All 6 intelligence signals</li>
+          <li>AI personalised letters + batch mailshots</li>
+          <li>Automated weekly market scanner</li>
+          <li>Market changes dashboard (new, reduced, withdrawn, sold)</li>
+          <li>Hot leads panel — withdrawn &amp; SSTC fallen-throughs</li>
+          <li>Competitor tracking — see which agents list &amp; lose</li>
+          <li>Team leaderboard + letter pipeline</li>
+          <li>Territory claims + route planning</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#demo" class="btn btn-primary btn-large">Start free trial →</a>
+        <div class="plan-urgency">Price goes to <strong>£119/mo</strong> when early-bird allocation fills up.</div>
+      </div>
+    </div>
+    <p class="pricing-guarantee">No lock-in contracts. Cancel in one click. <strong>If you don't win an instruction in your first 90 days, we'll extend free.</strong></p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="demo">
+  <div class="cta-inner">
+    <h2>Try it free for 7 days.</h2>
+    <p>We'll set up your territory, activate your signals, and get your team live. No card required — just tell us your patch.</p>
+    <form class="demo-form" onsubmit="handleDemo(event)">
+      <input type="text" placeholder="Your name" required>
+      <input type="text" placeholder="Agency name" required>
+      <input type="email" placeholder="Email" required class="full">
+      <input type="text" placeholder="Area / towns you cover" required class="full">
+      <button type="submit" class="btn btn-primary btn-large">Start free trial →</button>
+    </form>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="section-inner" style="max-width:700px;margin:0 auto;">
+    <div class="section-tag">FAQ</div>
+    <h2 class="section-title" style="margin-bottom:2rem;">Common questions.</h2>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do I have to go door knocking?</div>
+      <div class="faq-a">Not at all. Many agents use TopKnocker purely for targeted letters and mailshots — it's often more effective than knocking. The intelligence works for any outreach method: letters, calls, emails, or visits. You pick the approach that suits your style.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is the Motivation Score?</div>
+      <div class="faq-a">Every property gets a score from 0–100 based on six weighted signals: ownership tenure, EPC activity, market status (withdrawn, reduced, SSTC fallen through), planning applications, and whether multiple signals overlap. A score of 70+ means multiple indicators suggest this owner is likely to sell soon.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How do the letters work?</div>
+      <div class="faq-a">Click "Send Letter" on any property and the system generates a personalised letter using real comparable sales data from their area. It auto-selects the right template based on why the property scored high — a different tone for a long-term owner vs. someone whose sale fell through. Letters are 180 words, warm, professional, and designed to not feel like junk mail.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How does the weekly market scanner work?</div>
+      <div class="faq-a">Every Monday at 7am, TopKnocker automatically scans every listing across your territory. It compares this week's listings against last week's and detects new listings, price reductions, withdrawals, and fallen-through sales. It even checks Rightmove to find out if a disappeared listing was sold STC, under offer, or genuinely withdrawn. All changes are logged to your dashboard automatically.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is the Market Changes dashboard?</div>
+      <div class="faq-a">It's a live feed showing every listing change detected by the scanner — new properties coming to market, price reductions, withdrawals, and sales. You can filter by change type, search by street or postcode, and see which agent was involved. It's designed to give your team a quick Monday morning briefing on what happened across your patch.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How is this different from Rightmove or OnTheMarket data?</div>
+      <div class="faq-a">Portals show what's already listed — by then it's too late. TopKnocker shows you who's about to list, using ownership tenure, EPC activity, planning applications, and failed sale signals. You're reaching out before anyone else knows they're thinking of selling.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How quickly can we start?</div>
+      <div class="faq-a">Sign up and we'll typically activate your territory within 2–3 working days. Full property database, signals enabled, team accounts ready to go — all within your 7-day free trial.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What happens after the free trial?</div>
+      <div class="faq-a">After 7 days, you move to £79/month per office — no card needed to start, so there's zero risk. This is an early-bird launch rate that will go up to £119/month once our initial allocation fills. Lock it in now and you keep the lower rate for life.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do you offer exclusivity?</div>
+      <div class="faq-a">We're careful not to give competing agencies in the same patch access to the same intelligence. Exclusivity options are available depending on territory — we'll discuss this when setting up your trial.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 TopKnocker. Prospecting intelligence for UK estate agents.</p>
+  <p style="margin-top:0.5rem;"><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="/cdn-cgi/l/email-protection#0d65686161624d79627d6663626e66687f236e62237866"><span class="__cf_email__" data-cfemail="dab2bfb6b6b59aaeb5aab1b4b5b9b1bfa8f4b9b5f4afb1">[email&#160;protected]</span></a></p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function handleDemo(e) {
+  e.preventDefault();
